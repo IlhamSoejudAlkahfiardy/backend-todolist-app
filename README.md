@@ -66,6 +66,12 @@ php artisan ser
 ```
 Aplikasi Anda secara default dapat diakses di `http://localhost:8000`
 
+## Testing
+Jalankan command berikut ini untuk melakukan testing menggunakan unit testing
+```bash
+php artisan test
+```
+
 
 
 
