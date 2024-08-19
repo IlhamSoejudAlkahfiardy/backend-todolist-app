@@ -45,4 +45,36 @@ class ToDoController extends Controller
         // $test = $request->input('test');
         return response()->json(['message' => "ToDo List berhasil ditambahkan"], 201);
     }
+
+    public function getToDos(Request $request)
+    {
+        $user = users::where('email', $request->query('email'))
+            ->where('name', $request->query('name'))
+            ->where('username', $request->query('username'))
+            ->first();
+
+        // $tasks = tasks::where('user_id', $user->id)->join('categories', 'tasks.category_id', '=', 'categories.id')->get();
+        $tasks = tasks::where('user_id', $user->id)
+            ->join('categories', 'tasks.category_id', '=', 'categories.id')
+            ->select('tasks.*', 'categories.name as category_name')
+            ->get();
+
+        return response()->json(['dataTasks' => $tasks], 200);
+    }
+
+    public function deleteTodo(Request $request)
+    {
+        $request->validate([
+            'task_id' => 'required|exists:tasks,id', // Pastikan task_id ada di tabel tasks
+        ]);
+
+        $task = tasks::find($request->query('task_id'));
+
+        if ($task) {
+            $task->delete();
+            return response()->json(['message' => 'Task deleted successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Task not found'], 404);
+        }
+    }
 }
